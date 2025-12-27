@@ -67,11 +67,6 @@ export default function Landing() {
             Entrando automáticamente en {Math.max(secondsLeft, 0)}s…
           </span>
                 </div>
-
-                <footer className="landing__footer">
-                    <span>© 2025 Relatos de Papel</span>
-                    <span>Frontend con React</span>
-                </footer>
             </section>
         </main>
     );

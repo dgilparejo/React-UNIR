@@ -3,14 +3,8 @@
     display: grid;
     place-items: center;
     padding: 24px;
-    background: linear-gradient(
-            135deg,
-            var(--color-bg),
-            color-mix(in srgb, var(--color-bg) 80%, var(--color-accent))
-    );
 }
 
-/* Panel principal (no Card) */
 .landing__panel {
     width: min(900px, 100%);
     display: flex;
@@ -23,7 +17,6 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* HERO */
 .landing__hero {
     text-align: center;
 }
@@ -41,23 +34,14 @@
     font-size: 18px;
 }
 
-/* FEATURES: ahora es contenedor grid */
 .landing__features {
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
 }
 
-/* En pantallas más grandes, 2 columnas */
-@media (min-width: 720px) {
-    .landing__features {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-/* Cada Card de feature */
 .landing__featureCard {
-    padding: 16px; /* override al Card (si tu Card trae padding 32, lo reducimos aquí) */
+    padding: 16px;
 }
 
 .landing__featureTitle {
@@ -72,7 +56,6 @@
     color: var(--color-muted);
 }
 
-/* ACTIONS */
 .landing__actions {
     display: flex;
     flex-direction: column;
@@ -85,7 +68,6 @@
     font-size: 14px;
 }
 
-/* FOOTER */
 .landing__footer {
     margin-top: 6px;
     display: flex;

@@ -1,0 +1,81 @@
+.home {
+    min-height: 100%;
+    padding: 24px;
+    margin: 0 auto;
+    background: var(--color-bg);
+    max-width: 1200px;
+}
+
+.home__topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.home__title {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 28px;
+}
+
+.home__search {
+    width: min(420px, 100%);
+}
+
+.home__searchInput {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    outline: none;
+}
+
+.home__searchInput:focus {
+    border-color: color-mix(in srgb, var(--color-accent) 60%, var(--color-border));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);
+}
+
+.home__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
+    justify-items: center;
+}
+
+.home__bookCard {
+    width: 210px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.home__bookCard:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 50%, var(--color-border));
+    transform: translateY(-1px);
+    transition: transform 120ms ease;
+}
+
+.home__bookTitle {
+    margin: 0 0 6px;
+    color: var(--color-text);
+    font-size: 16px;
+}
+
+.home__bookAuthor {
+    margin: 0 0 10px;
+    color: var(--color-muted);
+    font-size: 14px;
+}
+
+.home__bookPrice {
+    margin: 0;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.home__empty {
+    color: var(--color-muted);
+}

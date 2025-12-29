@@ -1,0 +1,64 @@
+.book {
+    min-height: 100%;
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.book__card {
+    max-width: 900px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+    padding: 24px;
+}
+
+.book__image {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.book__info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.book__title {
+    margin: 0;
+    font-size: 28px;
+    color: var(--color-text);
+}
+
+.book__author {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 16px;
+}
+
+.book__price {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.book__id {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+.book__empty {
+    color: var(--color-muted);
+    max-width: 900px;
+}
+
+.book__actions {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+}

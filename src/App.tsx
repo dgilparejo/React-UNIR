@@ -1,10 +1,11 @@
-import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./router/AppRouter";
+import CartDrawer from "./components/cart/CartDrawer/CartDrawer";
 
 export default function App() {
     return (
-        <BrowserRouter>
+        <>
             <AppRouter />
-        </BrowserRouter>
+            <CartDrawer />
+        </>
     );
 }

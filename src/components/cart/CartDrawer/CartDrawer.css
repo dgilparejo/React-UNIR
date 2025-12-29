@@ -1,0 +1,133 @@
+.cartDrawer__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+    z-index: 50;
+}
+
+.cartDrawer__backdrop--open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.cartDrawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: min(420px, 92vw);
+    background: var(--color-surface);
+    border-left: 1px solid var(--color-border);
+    transform: translateX(100%);
+    transition: transform 220ms ease;
+    z-index: 60;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.cartDrawer--open {
+    transform: translateX(0);
+}
+
+.cartDrawer__header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cartDrawer__title {
+    margin: 0;
+    font-size: 18px;
+    color: var(--color-text);
+}
+
+.cartDrawer__close {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--color-muted);
+}
+
+.cartDrawer__content {
+    padding: 14px 16px;
+    overflow: auto;
+    flex: 1;
+}
+
+.cartDrawer__empty {
+    margin: 0;
+    color: var(--color-muted);
+}
+
+.cartDrawer__list {
+    display: grid;
+    gap: 10px;
+}
+
+.cartDrawer__item {
+    padding: 12px;
+}
+
+.cartDrawer__itemRow {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.cartDrawer__itemImg {
+    width: 56px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+}
+
+.cartDrawer__itemTitle {
+    margin: 0 0 4px;
+    font-size: 14px;
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.cartDrawer__itemMeta {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-muted);
+}
+
+.cartDrawer__remove {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-primary);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.cartDrawer__footer {
+    padding: 14px 16px;
+    border-top: 1px solid var(--color-border);
+    display: grid;
+    gap: 10px;
+}
+
+.cartDrawer__totalRow {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-text);
+}
+
+.cartDrawer__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}

@@ -1,31 +1,44 @@
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
-import {useCart} from "../../../hooks/useCart";
+import { useCart } from "../../../hooks/useCart";
+import Button from "../../ui/Button/Button";
 
 export default function Header() {
     const navigate = useNavigate();
-    const {toggle, count} = useCart();
+    const { toggle, count } = useCart();
 
     return (
         <header className="header">
             <div className="header__content">
-                <h1 className="header__brand" onClick={() => navigate("/home")}>
+                <h1
+                    className="header__brand"
+                    onClick={() => navigate("/")}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") navigate("/");
+                    }}
+                >
                     Relatos de Papel
                 </h1>
 
                 <nav className="header__nav">
-                    <button className="header__link" onClick={() => navigate("/")} >
+                    <Button variant="link" onClick={() => navigate("/")}>
                         Acceso
-                    </button>
+                    </Button>
 
-                    <button className="header__link" onClick={() => navigate("/home")}>
+                    <Button variant="link" onClick={() => navigate("/home")}>
                         Libros
-                    </button>
+                    </Button>
 
-                    <button className="header__link header__cartBtn" onClick={toggle}>
+                    <Button
+                        variant="link"
+                        className="header__cartBtn"
+                        onClick={toggle}
+                    >
                         Carrito
                         {count > 0 && <span className="header__badge">{count}</span>}
-                    </button>
+                    </Button>
                 </nav>
             </div>
         </header>

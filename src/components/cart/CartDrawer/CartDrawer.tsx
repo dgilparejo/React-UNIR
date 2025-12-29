@@ -18,9 +18,14 @@ export default function CartDrawer() {
             <aside className={`cartDrawer ${isOpen ? "cartDrawer--open" : ""}`} aria-label="Carrito">
                 <header className="cartDrawer__header">
                     <h2 className="cartDrawer__title">Carrito</h2>
-                    <button className="cartDrawer__close" onClick={close} aria-label="Cerrar carrito">
+                    <Button
+                        variant="link"
+                        className="cartDrawer__close"
+                        onClick={close}
+                        aria-label="Cerrar carrito"
+                    >
                         ✕
-                    </button>
+                    </Button>
                 </header>
 
                 <div className="cartDrawer__content">
@@ -39,13 +44,14 @@ export default function CartDrawer() {
                                             </p>
                                         </div>
 
-                                        <button
+                                        <Button
+                                            variant="link"
                                             className="cartDrawer__remove"
                                             onClick={() => remove(book.id)}
                                             aria-label={`Eliminar ${book.title}`}
                                         >
                                             Eliminar
-                                        </button>
+                                        </Button>
                                     </div>
                                 </Card>
                             ))}

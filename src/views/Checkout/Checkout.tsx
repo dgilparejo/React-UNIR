@@ -11,13 +11,8 @@ export default function Checkout() {
     const { items, total, clear } = useCart();
 
     const handlePay = () => {
-        // 1) alerta
         alert("Pedido realizado correctamente.");
-
-        // 2) vaciar carrito
         clear();
-
-        // 3) redirigir a la página principal (Home)
         navigate("/home", { replace: true });
     };
 

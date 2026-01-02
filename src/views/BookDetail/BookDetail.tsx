@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import type { Book } from "../../models/Book";
 import Header from "../../components/layout/Header/Header";
 import Footer from "../../components/layout/Footer/Footer";
@@ -15,6 +15,7 @@ export default function BookDetail() {
     const { id } = useParams<{ id: string }>();
     const location = useLocation();
     const state = location.state as LocationState | null;
+    const navigate = useNavigate();
 
     const book = state?.book;
     const { add } = useCart();
@@ -26,11 +27,20 @@ export default function BookDetail() {
             <main className="book">
                 {!book ? (
                     <p className="book__empty">
-                        No hay datos del libro (por ejemplo, si recargas la página).
-                        Vuelve a “Libros” y selecciónalo de nuevo.
+                        No hay datos del libro seleccionado.
                     </p>
                 ) : (
                     <Card className="book__card">
+                        <div className="book__top">
+                            <Button
+                                variant="link"
+                                className="button--back"
+                                onClick={() => navigate(-1)}
+                            >
+                                <span className="button--backIcon">←</span>
+                                <span>Volver</span>
+                            </Button>
+                        </div>
                         <img
                             src={book.image}
                             alt={`Portada de ${book.title}`}

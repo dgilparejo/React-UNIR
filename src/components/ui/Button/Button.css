@@ -38,3 +38,28 @@
 .button--link:hover {
     text-decoration: underline;
 }
+
+.button--back {
+    background: none;
+    border: none;
+    padding: 6px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-primary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.button--backIcon {
+    margin-right: 4px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.button--back:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}

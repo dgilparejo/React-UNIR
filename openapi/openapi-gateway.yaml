@@ -1,0 +1,293 @@
+openapi: 3.0.3
+info:
+  title: API Relatos de Papel (Gateway)
+  description: >
+    Contrato público del Cloud Gateway. Expone wrappers POST para frontends que solo envían POST,
+    y el Gateway transcribe/re-escribe hacia los métodos REST internos de los microservicios.
+  version: 1.0.0
+  contact:
+    name: Estudiante UNIR
+    email: estudiante@unir.net
+
+servers:
+  - url: http://localhost:8080
+    description: Spring Cloud Gateway (Local)
+
+tags:
+  - name: Cloud Gateway
+    description: Operaciones wrapper POST expuestas por el Gateway que se transcriben a métodos REST internos.
+
+paths:
+  /books/search:
+    post:
+      tags: [Cloud Gateway]
+      summary: Buscar libros (wrapper POST para GET /books)
+      description: El Gateway transcribe esta petición a un GET /books con query params equivalentes.
+      operationId: searchBooksViaPost
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookSearchRequest'
+      responses:
+        '200':
+          description: Lista de libros encontrada
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        '500':
+          description: Error interno del servidor
+
+  /books/create:
+    post:
+      tags: [Cloud Gateway]
+      summary: Crear un nuevo libro (wrapper POST para POST /books)
+      description: El Gateway reescribe esta petición a POST /books en ms-books-catalogue.
+      operationId: createBookViaPost
+      requestBody:
+        description: Datos del libro a crear
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookInput'
+      responses:
+        '201':
+          description: Libro creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          description: Datos de entrada inválidos
+
+  /books/{id}/get:
+    post:
+      tags: [Cloud Gateway]
+      summary: Obtener libro por id (wrapper POST para GET /books/{id})
+      description: El Gateway transcribe esta petición a GET /books/{id}.
+      operationId: getBookViaPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del libro
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Detalles del libro
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Libro no encontrado
+
+  /books/{id}/update:
+    post:
+      tags: [Cloud Gateway]
+      summary: Actualizar libro completo (wrapper POST para PUT /books/{id})
+      description: El Gateway transcribe esta petición a PUT /books/{id}.
+      operationId: updateBookViaPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del libro
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookInput'
+      responses:
+        '200':
+          description: Libro actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Libro no encontrado
+
+  /books/{id}/patch:
+    post:
+      tags: [Cloud Gateway]
+      summary: Actualizar parcialmente un libro (wrapper POST para PATCH /books/{id})
+      description: El Gateway transcribe esta petición a PATCH /books/{id}.
+      operationId: patchBookViaPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del libro
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookInput'
+      responses:
+        '200':
+          description: Libro actualizado parcialmente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+
+  /books/{id}/delete:
+    post:
+      tags: [Cloud Gateway]
+      summary: Eliminar libro (wrapper POST para DELETE /books/{id})
+      description: El Gateway transcribe esta petición a DELETE /books/{id}.
+      operationId: deleteBookViaPost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del libro
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Libro eliminado correctamente
+        '404':
+          description: Libro no encontrado
+
+  /payments/create:
+    post:
+      tags: [Cloud Gateway]
+      summary: Registrar una compra (wrapper POST para POST /payments)
+      description: El Gateway reescribe esta petición a POST /payments en ms-books-payments.
+      operationId: createPurchaseViaPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseRequest'
+      responses:
+        '201':
+          description: Compra registrada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseResponse'
+        '400':
+          description: Error de validación (Stock insuficiente, libro no visible o no existe)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    Book:
+      type: object
+      x-class-extra-annotation: |
+        @lombok.NoArgsConstructor
+        @lombok.AllArgsConstructor
+      properties:
+        id: { type: integer, format: int64, example: 1 }
+        title: { type: string, example: "Don Quijote de la Mancha" }
+        author: { type: string, example: "Miguel de Cervantes" }
+        publicationDate: { type: string, format: date, example: "1605-01-16" }
+        category: { type: string, example: "Novela" }
+        isbn: { type: string, example: "978-84-376-0494-7" }
+        rating:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 5
+          example: 4.8
+        visible: { type: boolean, example: true }
+        stock: { type: integer, example: 10 }
+        price: { type: number, format: double, example: 19.99 }
+
+    BookSearchRequest:
+      type: object
+      description: Filtros de búsqueda enviados por POST al Gateway.
+      properties:
+        title: { type: string }
+        author: { type: string }
+        category: { type: string }
+        isbn: { type: string }
+        rating:
+          type: number
+          format: double
+          minimum: 1
+          maximum: 5
+        visible: { type: boolean }
+        publicationDate: { type: string, format: date }
+        price:
+          type: number
+          format: double
+          minimum: 0
+          description: Filtrar por precio exacto
+        stock:
+          type: integer
+          minimum: 0
+          description: Filtrar por stock exacto
+
+    BookInput:
+      type: object
+      description: Objeto sin ID para creación/edición
+      x-class-extra-annotation: |
+        @lombok.NoArgsConstructor
+        @lombok.AllArgsConstructor
+      properties:
+        title: { type: string }
+        author: { type: string }
+        publicationDate: { type: string, format: date }
+        category: { type: string }
+        isbn: { type: string }
+        rating: { type: number, format: double }
+        visible: { type: boolean }
+        stock: { type: integer }
+        price: { type: number, format: double }
+
+    PurchaseRequest:
+      type: object
+      required: [bookId, quantity]
+      properties:
+        bookId:
+          type: integer
+          format: int64
+          description: ID del libro a comprar
+          example: 1
+        quantity:
+          type: integer
+          minimum: 1
+          description: Cantidad de unidades
+          example: 2
+
+    PurchaseResponse:
+      type: object
+      properties:
+        id: { type: integer, format: int64, example: 100 }
+        bookId: { type: integer, format: int64, example: 1 }
+        quantity: { type: integer, example: 2 }
+        purchaseDate:
+          type: string
+          format: date-time
+          example: "2023-10-27T10:00:00Z"
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Libro no disponible o sin stock"

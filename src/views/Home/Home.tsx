@@ -1,45 +1,75 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../../components/ui/Card/Card";
 import "./Home.css";
 import Header from "../../components/layout/Header/Header";
 import Footer from "../../components/layout/Footer/Footer";
-import type { Book } from "../../models/Book";
 import SearchInput from "../../components/ui/SearchInput/SearchInput";
+import { useBooksSearch } from "../../hooks/useBooksSearch";
+import type { Book } from "../../api";
 
-import cien from "../../assets/books/cien-anios-de-soledad.jpg";
-import quijote from "../../assets/books/don-quijote-de-la-mancha.jpg";
-import rosa from "../../assets/books/el-nombre-de-la-rosa.jpg";
-import sombra from "../../assets/books/la-sombra-del-viento.jpg";
-import patria from "../../assets/books/patria.jpg";
-import rayuela from "../../assets/books/rayuela.png";
-import george from "../../assets/books/1984.jpg";
-import rebelion from "../../assets/books/rebelion-en-la-granja.jpg";
-import cronica from "../../assets/books/cronica-de-una-muerte-anunciada.jpg";
-import colera from "../../assets/books/el-amor-en-los-tiempos-del-colera.jpg";
-import {useSearch} from "../../hooks/useSearch";
+// imágenes
+import img1984 from "../../assets/books/1984.jpg";
+import imgCien from "../../assets/books/cien-anios-de-soledad.jpg";
+import imgCronica from "../../assets/books/cronica-de-una-muerte-anunciada.jpg";
+import imgQuijote from "../../assets/books/don-quijote-de-la-mancha.jpg";
+import imgColera from "../../assets/books/el-amor-en-los-tiempos-del-colera.jpg";
+import imgRosa from "../../assets/books/el-nombre-de-la-rosa.jpg";
+import imgSombra from "../../assets/books/la-sombra-del-viento.jpg";
+import imgPatria from "../../assets/books/patria.jpg";
+import imgRayuela from "../../assets/books/rayuela.png";
+import imgRebelion from "../../assets/books/rebelion-en-la-granja.jpg";
+
+const bookImages = [
+    imgCien,
+    imgSombra,
+    imgQuijote,
+    imgRayuela,
+    imgRosa,
+    imgPatria,
+    img1984,
+    imgRebelion,
+    imgCronica,
+    imgColera,
+];
+
+function pickImage(bookId?: number) {
+    if (!bookId) return bookImages[0];
+    return bookImages[(bookId - 1) % bookImages.length];
+}
 
 export default function Home() {
     const navigate = useNavigate();
 
-    const books: Book[] = [
-        { id: "1", title: "Cien años de soledad", author: "Gabriel García Márquez", price: 19.9, image: cien },
-        { id: "2", title: "La sombra del viento", author: "Carlos Ruiz Zafón", price: 17.5, image: sombra },
-        { id: "3", title: "Don Quijote de la Mancha", author: "Miguel de Cervantes", price: 21.0, image: quijote },
-        { id: "4", title: "Rayuela", author: "Julio Cortázar", price: 16.0, image: rayuela },
-        { id: "5", title: "El nombre de la rosa", author: "Umberto Eco", price: 18.25, image: rosa },
-        { id: "6", title: "Patria", author: "Fernando Aramburu", price: 20.0, image: patria },
-        { id: "7", title: "1984", author: "George Orwell", price: 14.9, image: george },
-        { id: "8", title: "Rebelión en la granja", author: "George Orwell", price: 12.5, image: rebelion },
-        { id: "9", title: "Crónica de una muerte anunciada", author: "Gabriel García Márquez", price: 13.75, image: cronica },
-        { id: "10", title: "El amor en los tiempos del cólera", author: "Gabriel García Márquez", price: 18.0, image: colera },
-    ];
+    // búsqueda rápida
+    const [q, setQ] = useState("");
 
-    const { query, setQuery, filteredItems: filteredBooks } = useSearch(
-        books,
-        (book, q) => book.title.toLowerCase().includes(q)
-    );
+    // filtros avanzados
+    const [category, setCategory] = useState("");
+    const [isbn, setIsbn] = useState("");
+    const [rating, setRating] = useState<string>(""); // input string -> number
+    const [visible, setVisible] = useState(true);
+    const [publicationDate, setPublicationDate] = useState("");
+    const [price, setPrice] = useState<string>("");
+    const [stock, setStock] = useState<string>("");
+
+    const { items: books, loading, error } = useBooksSearch({
+        // q lo mandamos a title+author para full-text/autocomplete en backend
+        title: q,
+        author: q,
+
+        category: category || undefined,
+        isbn: isbn || undefined,
+        visible,
+
+        rating: rating ? Number(rating) : undefined,
+        publicationDate: publicationDate || undefined,
+        price: price ? Number(price) : undefined,
+        stock: stock ? Number(stock) : undefined,
+    });
 
     const handleOpenBook = (book: Book) => {
+        if (!book.id) return;
         navigate(`/book/${book.id}`, { state: { book } });
     };
 
@@ -49,36 +79,92 @@ export default function Home() {
             <main className="home">
                 <header className="home__topbar">
                     <h1 className="home__title">Libros</h1>
-
-                    <SearchInput value={query} placeholder="Buscar por título…" onChange={setQuery} />
+                    <SearchInput value={q} placeholder="Buscar (título o autor)..." onChange={setQ} />
                 </header>
 
+                {/* Filtros (puedes estilarlos luego) */}
+                <section className="home__filters" aria-label="Filtros">
+                    <input
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        placeholder="Categoría"
+                    />
+                    <input value={isbn} onChange={(e) => setIsbn(e.target.value)} placeholder="ISBN" />
+
+                    <input
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
+                        placeholder="Rating mínimo (>=)"
+                        inputMode="decimal"
+                    />
+
+                    <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <input
+                            type="checkbox"
+                            checked={visible}
+                            onChange={(e) => setVisible(e.target.checked)}
+                        />
+                        Visible
+                    </label>
+
+                    <input
+                        type="date"
+                        value={publicationDate}
+                        onChange={(e) => setPublicationDate(e.target.value)}
+                    />
+
+                    <input
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        placeholder="Price exact"
+                        inputMode="decimal"
+                    />
+
+                    <input
+                        value={stock}
+                        onChange={(e) => setStock(e.target.value)}
+                        placeholder="Stock exact"
+                        inputMode="numeric"
+                    />
+                </section>
+
+                {loading && <p className="home__hint">Buscando…</p>}
+                {error && <p className="home__error">{error}</p>}
+
                 <section className="home__grid" aria-label="Listado de libros">
-                    {filteredBooks.map((book) => (
-                        <Card
-                            key={book.id}
-                            className="home__bookCard"
-                            imageSrc={book.image}
-                            imageAlt={`Portada de ${book.title}`}
-                            onClick={() => handleOpenBook(book)}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") handleOpenBook(book);
-                            }}
-                        >
-                            <h3 className="home__bookTitle">{book.title}</h3>
-                            <p className="home__bookAuthor">{book.author}</p>
+                    {books.map((book) => {
+                        const idKey = book.id ?? `${book.title}-${book.isbn}`;
+                        const title = book.title ?? "Sin título";
+                        const author = book.author ?? "Autor desconocido";
+                        const priceValue = book.price;
 
-                            <div className="home__bookBottom">
-                                <p className="home__bookPrice">{book.price.toFixed(2)} €</p>
+                        return (
+                            <Card
+                                key={idKey}
+                                className="home__bookCard"
+                                imageSrc={pickImage(book.id)}
+                                imageAlt={`Portada de ${title}`}
+                                onClick={() => handleOpenBook(book)}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") handleOpenBook(book);
+                                }}
+                            >
+                                <h3 className="home__bookTitle">{title}</h3>
+                                <p className="home__bookAuthor">{author}</p>
 
-                            </div>
-                        </Card>
-                    ))}
+                                <div className="home__bookBottom">
+                                    <p className="home__bookPrice">
+                                        {typeof priceValue === "number" ? `${priceValue.toFixed(2)} €` : "— €"}
+                                    </p>
+                                </div>
+                            </Card>
+                        );
+                    })}
 
-                    {filteredBooks.length === 0 && (
-                        <p className="home__empty">No hay resultados para “{query}”.</p>
+                    {!loading && books.length === 0 && (
+                        <p className="home__empty">No hay resultados.</p>
                     )}
                 </section>
             </main>
